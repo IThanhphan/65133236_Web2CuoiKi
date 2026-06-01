@@ -14,6 +14,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ContractService {
@@ -55,5 +57,9 @@ public class ContractService {
         Room room = contract.getRoom();
         room.setStatus(RoomStatus.AVAILABLE);
         roomRepository.save(room);
+    }
+
+    public List<Contract> getActiveContracts() {
+        return contractRepository.findActiveContracts();
     }
 }

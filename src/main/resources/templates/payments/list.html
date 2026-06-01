@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nhật ký Thanh toán - Hệ thống Quản lý Phòng Trọ</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-slate-50 antialiased min-h-screen">
+
+<div th:replace="~{fragments/header :: header}"></div>
+
+<div class="flex min-h-[calc(100vh-64px)]">
+
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+    <main class="flex-1 p-6 md:p-8 bg-slate-50">
+
+        <div class="mb-6">
+            <h2 class="text-2xl font-bold text-slate-800 tracking-tight">Nhật ký & Lịch sử thanh toán</h2>
+            <p class="text-sm text-slate-500 mt-1">Lưu trữ tất cả danh sách các đợt thu tiền thực tế từ khách thuê phòng
+                trọ.</p>
+        </div>
+
+        <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 mb-6">
+            <form th:action="@{/payments}" method="get" class="flex flex-wrap items-center gap-3">
+
+                <div class="flex-1 min-w-[240px]">
+                    <input type="text"
+                           name="keyword"
+                           placeholder="Tìm theo mã hóa đơn, tên người thuê..."
+                           th:value="${keyword}"
+                           class="w-full px-4 py-2 text-sm rounded-xl border border-slate-200 bg-slate-50 text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:bg-white transition duration-150">
+                </div>
+
+                <div class="w-full sm:w-48">
+                    <select name="method"
+                            class="w-full px-4 py-2 text-sm rounded-xl border border-slate-200 bg-slate-50 text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition duration-150 cursor-pointer">
+                        <option value="">Mọi phương thức</option>
+                        <option value="CASH" th:selected="${method == 'CASH'}">Tiền mặt (CASH)</option>
+                        <option value="BANK_TRANSFER" th:selected="${method == 'BANK_TRANSFER'}">Chuyển khoản
+                            (BANK_TRANSFER)
+                        </option>
+                    </select>
+                </div>
+
+                <button type="submit"
+                        class="w-full sm:w-auto px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl text-sm transition duration-150 cursor-pointer shadow-sm">
+                    Lọc dữ liệu
+                </button>
+            </form>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                    <tr class="bg-slate-50 border-b border-slate-100 text-slate-600 text-xs uppercase tracking-wider font-semibold">
+                        <th class="p-4">Thời gian giao dịch</th>
+                        <th class="p-4">Hóa đơn gốc</th>
+                        <th class="p-4">Khách thanh toán</th>
+                        <th class="p-4 text-center">Phương thức</th>
+                        <th class="p-4 text-right">Số tiền nộp</th>
+                        <th class="p-4">Ghi chú phiếu thu</th>
+                    </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 text-sm text-slate-700">
+                    <tr th:if="${#lists.isEmpty(payments)}">
+                        <td colspan="6" class="p-8 text-center text-slate-400 italic bg-slate-50/50">
+                            Chưa có dữ liệu giao dịch nào được ghi nhận.
+                        </td>
+                    </tr>
+
+                    <tr th:each="payment : ${payments}" class="hover:bg-slate-50/60 transition-colors duration-150">
+                        <td class="p-4 font-mono text-xs text-slate-600 font-medium"
+                            th:text="${#temporals.format(payment.paymentDate, 'dd/MM/yyyy HH:mm')}"></td>
+
+                        <td class="p-4">
+                            <span class="px-2.5 py-1 rounded-lg text-xs font-mono font-bold bg-slate-100 text-slate-700 border border-slate-200"
+                                  th:text="${payment.invoice.invoiceCode}"></span>
+                        </td>
+
+                        <td class="p-4 font-semibold text-slate-800"
+                            th:text="${payment.invoice.contract.tenant.fullName}"></td>
+
+                        <td class="p-4 text-center">
+                            <span th:if="${payment.paymentMethod == 'BANK_TRANSFER'}"
+                                  class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100">
+                                🏦 Chuyển khoản
+                            </span>
+                            <span th:if="${payment.paymentMethod == 'CASH'}"
+                                  class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-amber-50 text-amber-700 border border-amber-100">
+                                💵 Tiền mặt
+                            </span>
+                        </td>
+
+                        <td class="p-4 text-right font-bold text-emerald-600 text-base"
+                            th:text="${#numbers.formatDecimal(payment.amount,0,'COMMA',0,'POINT')} + ' đ'"></td>
+
+                        <td class="p-4 text-xs text-slate-500 max-w-xs truncate"
+                            th:text="${payment.note != null ? payment.note : '---'}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="flex justify-center mt-6" th:if="${totalPages > 1}">
+            <nav class="inline-flex -space-x-px rounded-xl bg-white border border-slate-200 p-1 gap-1">
+                <a th:if="${currentPage > 0}"
+                   th:href="@{/payments(page=${currentPage - 1}, keyword=${keyword}, method=${method})}"
+                   class="inline-flex items-center justify-center w-9 h-9 text-sm font-medium text-slate-500 hover:bg-slate-50 rounded-lg">
+                    &laquo;
+                </a>
+                <th:block th:each="i : ${#numbers.sequence(1, totalPages)}">
+                    <a th:href="@{/payments(page=${i - 1}, keyword=${keyword}, method=${method})}"
+                       th:text="${i}"
+                       th:classappend="${i - 1 == currentPage} ? 'bg-blue-600 text-white font-semibold' : 'text-slate-600 hover:bg-slate-50'"
+                       class="inline-flex items-center justify-center w-9 h-9 text-sm font-medium rounded-lg">
+                    </a>
+                </th:block>
+                <a th:if="${currentPage + 1 < totalPages}"
+                   th:href="@{/payments(page=${currentPage + 1}, keyword=${keyword}, method=${method})}"
+                   class="inline-flex items-center justify-center w-9 h-9 text-sm font-medium text-slate-500 hover:bg-slate-50 rounded-lg">
+                    &raquo;
+                </a>
+            </nav>
+        </div>
+
+    </main>
+</div>
+</body>
+</html>

@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface ContractRepository extends JpaRepository<Contract, Long> {
 
@@ -20,4 +22,7 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
     @Query(value = "SELECT c FROM Contract c JOIN FETCH c.room JOIN FETCH c.tenant",
             countQuery = "SELECT count(c) FROM Contract c")
     Page<Contract> findAllContractsWithRelations(Pageable pageable);
+
+    @Query("SELECT c FROM Contract c WHERE c.status = 'ACTIVE'")
+    List<Contract> findActiveContracts();
 }
