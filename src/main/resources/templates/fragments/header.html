@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div th:fragment="header" class="header">
+
+    <h2>QUẢN LÝ PHÒNG TRỌ</h2>
+
+    <form th:action="@{/logout}" method="post">
+        <button class="logout-btn">
+            Logout
+        </button>
+    </form>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý phòng</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <style>
+
+
+        .content{
+            flex:1;
+            padding:30px;
+            background:#f8f9fa;
+        }
+
+        .top-bar{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:20px;
+        }
+
+        .btn{
+            padding:10px 15px;
+            border:none;
+            border-radius:5px;
+            cursor:pointer;
+            text-decoration:none;
+            color:white;
+        }
+
+        .btn-create{
+            background:#198754;
+        }
+
+        .btn-edit{
+            background:#0d6efd;
+        }
+
+        .btn-delete{
+            background:#dc3545;
+        }
+
+        table{
+            width:100%;
+            border-collapse:collapse;
+            background:white;
+        }
+
+        th, td{
+            border:1px solid #ddd;
+            padding:12px;
+            text-align:center;
+        }
+
+        th{
+            background:#0d6efd;
+            color:white;
+        }
+
+        tr:nth-child(even){
+            background:#f2f2f2;
+        }
+
+        .action-group{
+            display:flex;
+            justify-content:center;
+            gap:10px;
+        }
+
+        .action-group form{
+            display:inline;
+        }
+
+.pagination{
+    margin-top:20px;
+    display:flex;
+    justify-content:center;
+    gap:8px;
+}
+
+.pagination a{
+    padding:8px 12px;
+    border:1px solid #ddd;
+    text-decoration:none;
+    border-radius:5px;
+    background:white;
+    color:black;
+}
+
+.pagination a:hover{
+    background:#0d6efd;
+    color:white;
+}
+
+.pagination a.active{
+    background:#0d6efd;
+    color:white;
+    font-weight:bold;
+}
+    </style>
+
+</head>
+<body>
+
+<!-- Header -->
+<div th:replace="~{fragments/header :: header}"></div>
+
+<div class="layout">
+
+    <!-- Sidebar -->
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+    <!-- Content -->
+    <div class="content">
+
+        <div class="top-bar">
+            <form th:action="@{/rooms}" method="get">
+
+                <input type="text"
+                       name="roomCode"
+                       placeholder="Tìm mã phòng"
+                       th:value="${roomCode}">
+
+                <select name="status">
+
+                    <option value="">
+                        Tất cả trạng thái
+                    </option>
+
+                    <option value="AVAILABLE"
+                            th:selected="${status != null && status.name() == 'AVAILABLE'}">
+                        Còn trống
+                    </option>
+
+                    <option value="RENTED"
+                            th:selected="${status != null && status.name() == 'RENTED'}">
+                        Đã thuê
+                    </option>
+
+                    <option value="MAINTENANCE"
+                            th:selected="${status != null && status.name() == 'MAINTENANCE'}">
+                        Bảo trì
+                    </option>
+
+                </select>
+
+                <button type="submit"
+                        class="btn btn-edit">
+                    Tìm kiếm
+                </button>
+
+            </form>
+            <h2>Danh sách phòng</h2>
+
+            <a th:href="@{/rooms/create}" class="btn btn-create">
+                + Thêm phòng
+            </a>
+        </div>
+
+        <table>
+
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Mã phòng</th>
+                <th>Tên phòng</th>
+                <th>Giá thuê</th>
+                <th>Diện tích</th>
+                <th>Số người</th>
+                <th>Trạng thái</th>
+                <th>Thao tác</th>
+            </tr>
+            </thead>
+
+            <tbody>
+
+            <tr th:each="room : ${rooms}">
+
+                <td th:text="${room.id}"></td>
+
+                <td th:text="${room.roomCode}"></td>
+
+                <td th:text="${room.roomName}"></td>
+
+                <td th:text="${#numbers.formatDecimal(room.price,0,'COMMA',0,'POINT')}"></td>
+
+                <td th:text="${room.area}"></td>
+
+                <td th:text="${room.maxPeople}"></td>
+
+                <td th:text="${room.status}"></td>
+
+                <td>
+                    <div class="action-group">
+
+                        <a th:href="@{/rooms/edit/{id}(id=${room.id})}"
+                           class="btn btn-edit">
+                            Sửa
+                        </a>
+
+                        <form th:action="@{/rooms/{id}(id=${room.id})}"
+                              method="post">
+
+                            <input type="hidden"
+                                   name="_method"
+                                   value="delete">
+
+                            <button type="submit"
+                                    class="btn btn-delete"
+                                    onclick="return confirm('Bạn có chắc muốn xóa phòng này?')">
+                                Xóa
+                            </button>
+
+                        </form>
+
+                    </div>
+                </td>
+
+            </tr>
+
+            </tbody>
+
+        </table>
+
+        <br>
+
+        <div class="pagination" th:if="${roomPage.totalPages > 1}">
+
+            <a th:if="${roomPage.hasPrevious()}"
+               th:href="@{/rooms(page=${roomPage.number - 1}, roomCode=${roomCode}, status=${status})}">
+                &laquo;
+            </a>
+
+            <th:block th:each="i : ${#numbers.sequence(1, roomPage.totalPages)}">
+                <a th:href="@{/rooms(page=${i - 1}, roomCode=${roomCode}, status=${status})}"
+                   th:text="${i}"
+                   th:classappend="${i - 1 == roomPage.number} ? 'active' : ''">
+                </a>
+            </th:block>
+
+            <a th:if="${roomPage.hasNext()}"
+               th:href="@{/rooms(page=${roomPage.number + 1}, roomCode=${roomCode}, status=${status})}">
+                &raquo;
+            </a>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

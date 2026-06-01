@@ -1,0 +1,53 @@
+<form
+        th:action="@{/rooms/edit/{id}(id=${room.id})}"
+        th:object="${room}"
+        method="post" xmlns:th="http://www.w3.org/1999/xhtml">
+
+    <input
+            th:field="*{roomCode}">
+
+    <br><br>
+
+    <input
+            th:field="*{roomName}">
+
+    <br><br>
+
+    <input
+            th:field="*{price}">
+
+    <br><br>
+
+    <input
+            th:field="*{area}">
+
+    <br><br>
+
+    <input
+            th:field="*{maxPeople}">
+
+    <br><br>
+
+    <select th:field="*{status}">
+
+        <option value="AVAILABLE">
+            AVAILABLE
+        </option>
+
+        <option value="RENTED">
+            RENTED
+        </option>
+
+        <option value="MAINTENANCE">
+            MAINTENANCE
+        </option>
+
+    </select>
+
+    <br><br>
+
+    <button type="submit">
+        Cập nhật
+    </button>
+
+</form>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div th:fragment="sidebar" class="sidebar">
+
+    <ul>
+
+        <li>
+            <a th:href="@{/dashboard}">
+                Dashboard
+            </a>
+        </li>
+
+        <li>
+            <a th:href="@{/rooms}">
+                Quản lý phòng
+            </a>
+        </li>
+
+        <li>
+            <a th:href="@{/tenants}">
+                Người thuê
+            </a>
+        </li>
+
+        <li>
+            <a th:href="@{/contracts}">
+                Hợp đồng
+            </a>
+        </li>
+
+        <li>
+            <a th:href="@{/invoices}">
+                Hóa đơn
+            </a>
+        </li>
+
+        <li>
+            <a th:href="@{/payments}">
+                Thanh toán
+            </a>
+        </li>
+
+    </ul>
+
+</div>
+
+</body>
+</html>

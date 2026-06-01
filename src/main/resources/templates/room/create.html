@@ -1,0 +1,63 @@
+<form
+        th:action="@{/rooms/create}"
+        method="post">
+
+    <input
+            type="text"
+            name="roomCode"
+            placeholder="Mã phòng">
+
+    <br><br>
+
+    <input
+            type="text"
+            name="roomName"
+            placeholder="Tên phòng">
+
+    <br><br>
+
+    <input
+            type="number"
+            name="price"
+            placeholder="Giá thuê">
+
+    <br><br>
+
+    <input
+            type="number"
+            step="0.01"
+            name="area"
+            placeholder="Diện tích">
+
+    <br><br>
+
+    <input
+            type="number"
+            name="maxPeople"
+            placeholder="Số người">
+
+    <br><br>
+
+    <select name="status">
+
+        <option value="AVAILABLE">
+            AVAILABLE
+        </option>
+
+        <option value="RENTED">
+            RENTED
+        </option>
+
+        <option value="MAINTENANCE">
+            MAINTENANCE
+        </option>
+
+    </select>
+
+    <br><br>
+
+    <button type="submit">
+        Lưu
+    </button>
+
+</form>

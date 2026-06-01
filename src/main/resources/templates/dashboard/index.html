@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <style>
+
+
+        .content{
+            flex:1;
+            background:#f8f9fa;
+            padding:30px;
+        }
+
+        .card-container{
+            display:grid;
+            grid-template-columns:repeat(3,1fr);
+            gap:20px;
+        }
+
+        .card{
+            background:white;
+            padding:20px;
+
+            border-radius:10px;
+
+            box-shadow:0 0 10px rgba(0,0,0,.1);
+        }
+
+        .number{
+            font-size:32px;
+            margin-top:10px;
+            color:#0d6efd;
+        }
+
+
+    </style>
+
+</head>
+<body>
+
+<div th:replace="fragments/header :: header"></div>
+
+<div class="layout">
+    <div th:replace="fragments/sidebar :: sidebar"></div>
+
+    <div class="content">
+
+        <h2>Dashboard</h2>
+
+        <br>
+
+        <div class="card-container">
+
+            <div class="card">
+                <h3>Tổng số phòng</h3>
+                <div class="number">20</div>
+            </div>
+
+            <div class="card">
+                <h3>Đã thuê</h3>
+                <div class="number">15</div>
+            </div>
+
+            <div class="card">
+                <h3>Còn trống</h3>
+                <div class="number">5</div>
+            </div>
+
+            <div class="card">
+                <h3>Hợp đồng hoạt động</h3>
+                <div class="number">15</div>
+            </div>
+
+            <div class="card">
+                <h3>Doanh thu tháng</h3>
+                <div class="number">30M</div>
+            </div>
+
+            <div class="card">
+                <h3>Hóa đơn chưa thanh toán</h3>
+                <div class="number">3</div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
