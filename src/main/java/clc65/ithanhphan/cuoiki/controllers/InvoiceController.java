@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -70,8 +71,17 @@ public class InvoiceController {
     }
 
     @PostMapping("/pay-speedy/{id}")
-    public String paySpeedy(@PathVariable("id") Long id) {
-        invoiceService.payInvoiceSpeedy(id);
+    public String handlePaySpeedy(@PathVariable("id") Long id,
+                                  @RequestParam(value = "paymentMethod", defaultValue = "CASH") String paymentMethod,
+                                  RedirectAttributes redirectAttributes) {
+        try {
+            invoiceService.payInvoiceSpeedy(id, paymentMethod);
+
+            String vietnameseMethod = "CASH".equals(paymentMethod) ? "Tiền mặt" : "Chuyển khoản";
+            redirectAttributes.addFlashAttribute("successMessage", "Xác nhận thu tiền thành công qua: " + vietnameseMethod);
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Thất bại: " + e.getMessage());
+        }
         return "redirect:/invoices";
     }
 }

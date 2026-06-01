@@ -38,7 +38,7 @@ public class InvoiceService {
     }
 
     @Transactional
-    public void payInvoiceSpeedy(Long invoiceId) {
+    public void payInvoiceSpeedy(Long invoiceId, String paymentMethodStr) {
         Invoice invoice = invoiceRepository.findById(invoiceId)
                 .orElseThrow(() -> new IllegalArgumentException("Hóa đơn không tồn tại: " + invoiceId));
 
@@ -46,12 +46,17 @@ public class InvoiceService {
             invoice.setStatus(Invoice.InvoiceStatus.PAID);
             invoiceRepository.save(invoice);
 
+            String method = (paymentMethodStr != null && !paymentMethodStr.isEmpty()) ? paymentMethodStr : "CASH";
+
             Payment payment = new Payment();
             payment.setInvoice(invoice);
             payment.setAmount(invoice.getTotalAmount());
             payment.setPaymentDate(LocalDateTime.now());
-            payment.setPaymentMethod("CASH");
-            payment.setNote("Gạch nợ nhanh từ trang quản lý hóa đơn");
+            payment.setPaymentMethod(method);
+
+            String readableMethod = "CASH".equals(method) ? "Tiền mặt" : "Chuyển khoản";
+            payment.setNote("Gạch nợ nhanh qua [" + readableMethod + "] từ trang danh sách");
+
             paymentRepository.save(payment);
         }
     }
