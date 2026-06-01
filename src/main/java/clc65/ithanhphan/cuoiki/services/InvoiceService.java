@@ -50,7 +50,7 @@ public class InvoiceService {
             payment.setInvoice(invoice);
             payment.setAmount(invoice.getTotalAmount());
             payment.setPaymentDate(LocalDateTime.now());
-            payment.setPaymentMethod("CASH"); // Mặc định thu trực tiếp bằng tiền mặt
+            payment.setPaymentMethod("CASH");
             payment.setNote("Gạch nợ nhanh từ trang quản lý hóa đơn");
             paymentRepository.save(payment);
         }

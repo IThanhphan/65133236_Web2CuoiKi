@@ -1,6 +1,7 @@
 package clc65.ithanhphan.cuoiki.repositories;
 
 import clc65.ithanhphan.cuoiki.models.Contract;
+import clc65.ithanhphan.cuoiki.models.ContractStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -25,4 +26,6 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
 
     @Query("SELECT c FROM Contract c WHERE c.status = 'ACTIVE'")
     List<Contract> findActiveContracts();
+
+    long countByStatus(ContractStatus status);
 }

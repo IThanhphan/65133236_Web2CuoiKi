@@ -44,12 +44,10 @@ public class ContractController {
     @GetMapping("/create")
     public String showCreateForm(Model model) {
         Contract contract = new Contract();
-        // Tự động sinh mã hợp đồng ngẫu nhiên để gợi ý cho chủ nhà
         contract.setContractCode("HD-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
 
         model.addAttribute("contract", contract);
-        // Chỉ lấy phòng trống (AVAILABLE) hoặc phòng hiện tại để tạo hợp đồng mới
-        model.addAttribute("rooms", roomRepository.findAll()); // Nên lọc theo status = 'AVAILABLE' thực tế
+        model.addAttribute("rooms", roomRepository.findAll());
         model.addAttribute("tenants", tenantRepository.findAll());
         model.addAttribute("statuses", ContractStatus.values());
 

@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
+
 @Repository
 public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
 
@@ -19,4 +21,11 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
                                  @Param("month") Integer month,
                                  @Param("status") Invoice.InvoiceStatus status,
                                  Pageable pageable);
+
+    long countByStatus(Invoice.InvoiceStatus status);
+
+    @Query("SELECT SUM(i.totalAmount) FROM Invoice i WHERE i.status = 'PAID' " +
+            "AND i.billingMonth = :month AND i.billingYear = :year")
+    BigDecimal sumRevenueByMonthAndYear(@Param("month") int month, @Param("year") int year);
+
 }

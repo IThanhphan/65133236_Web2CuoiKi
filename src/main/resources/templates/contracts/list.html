@@ -89,7 +89,7 @@
                         </td>
                         <td class="p-4 text-center">
                             <span th:if="${contract.status.name() == 'ACTIVE'}"
-                                  class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">Đang chạy</span>
+                                  class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">Còn hạn</span>
                             <span th:if="${contract.status.name() == 'EXPIRED'}"
                                   class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200">Hết hạn</span>
                             <span th:if="${contract.status.name() == 'TERMINATED'}"

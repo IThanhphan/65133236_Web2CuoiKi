@@ -18,7 +18,6 @@ public class WebConfig implements WebMvcConfigurer {
             public void postHandle(HttpServletRequest request, HttpServletResponse response,
                                    Object handler, ModelAndView modelAndView) throws Exception {
                 if (modelAndView != null) {
-                    // Gán trực tiếp giá trị URI vào Model để Thymeleaf đọc dễ dàng
                     modelAndView.addObject("currentURI", request.getRequestURI());
                 }
             }
