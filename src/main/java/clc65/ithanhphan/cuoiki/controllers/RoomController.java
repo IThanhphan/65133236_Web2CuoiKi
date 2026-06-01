@@ -37,10 +37,6 @@ public class RoomController {
         model.addAttribute("roomCode", roomCode);
         model.addAttribute("status", status);
 
-        System.out.println("Total Elements = " + roomPage.getTotalElements());
-        System.out.println("Total Pages = " + roomPage.getTotalPages());
-        System.out.println("Current Page = " + roomPage.getNumber());
-
         return "room/list";
     }
 

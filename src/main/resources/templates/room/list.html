@@ -2,251 +2,159 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Quản lý phòng</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-
-    <style>
-
-
-        .content{
-            flex:1;
-            padding:30px;
-            background:#f8f9fa;
-        }
-
-        .top-bar{
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            margin-bottom:20px;
-        }
-
-        .btn{
-            padding:10px 15px;
-            border:none;
-            border-radius:5px;
-            cursor:pointer;
-            text-decoration:none;
-            color:white;
-        }
-
-        .btn-create{
-            background:#198754;
-        }
-
-        .btn-edit{
-            background:#0d6efd;
-        }
-
-        .btn-delete{
-            background:#dc3545;
-        }
-
-        table{
-            width:100%;
-            border-collapse:collapse;
-            background:white;
-        }
-
-        th, td{
-            border:1px solid #ddd;
-            padding:12px;
-            text-align:center;
-        }
-
-        th{
-            background:#0d6efd;
-            color:white;
-        }
-
-        tr:nth-child(even){
-            background:#f2f2f2;
-        }
-
-        .action-group{
-            display:flex;
-            justify-content:center;
-            gap:10px;
-        }
-
-        .action-group form{
-            display:inline;
-        }
-
-.pagination{
-    margin-top:20px;
-    display:flex;
-    justify-content:center;
-    gap:8px;
-}
-
-.pagination a{
-    padding:8px 12px;
-    border:1px solid #ddd;
-    text-decoration:none;
-    border-radius:5px;
-    background:white;
-    color:black;
-}
-
-.pagination a:hover{
-    background:#0d6efd;
-    color:white;
-}
-
-.pagination a.active{
-    background:#0d6efd;
-    color:white;
-    font-weight:bold;
-}
-    </style>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý phòng - Hệ thống Quản lý Phòng Trọ</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
-<body>
+<body class="bg-slate-50 antialiased min-h-screen">
 
-<!-- Header -->
 <div th:replace="~{fragments/header :: header}"></div>
 
-<div class="layout">
+<div class="flex min-h-[calc(100vh-64px)]">
 
-    <!-- Sidebar -->
     <div th:replace="~{fragments/sidebar :: sidebar}"></div>
 
-    <!-- Content -->
-    <div class="content">
+    <main class="flex-1 p-6 md:p-8 bg-slate-50">
 
-        <div class="top-bar">
-            <form th:action="@{/rooms}" method="get">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+            <div>
+                <h2 class="text-2xl font-bold text-slate-800 tracking-tight">Quản lý danh sách phòng</h2>
+                <p class="text-sm text-slate-500 mt-1">Tìm kiếm, thêm, sửa hoặc xóa các phòng trong hệ thống.</p>
+            </div>
 
-                <input type="text"
-                       name="roomCode"
-                       placeholder="Tìm mã phòng"
-                       th:value="${roomCode}">
+            <a th:href="@{/rooms/create}"
+               class="inline-flex items-center justify-center px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl shadow-sm transition duration-150 cursor-pointer text-sm">
+                <svg class="w-4 h-4 me-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                     xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                Thêm phòng mới
+            </a>
+        </div>
 
-                <select name="status">
+        <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 mb-6">
+            <form th:action="@{/rooms}" method="get" class="flex flex-col sm:flex-row items-center gap-3">
 
-                    <option value="">
-                        Tất cả trạng thái
-                    </option>
+                <div class="w-full sm:w-72">
+                    <input type="text"
+                           name="roomCode"
+                           placeholder="Tìm theo mã hoặc tên phòng..."
+                           th:value="${roomCode}"
+                           class="w-full px-4 py-2 text-sm rounded-xl border border-slate-200 bg-slate-50 text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:bg-white transition duration-150">
+                </div>
 
-                    <option value="AVAILABLE"
-                            th:selected="${status != null && status.name() == 'AVAILABLE'}">
-                        Còn trống
-                    </option>
-
-                    <option value="RENTED"
-                            th:selected="${status != null && status.name() == 'RENTED'}">
-                        Đã thuê
-                    </option>
-
-                    <option value="MAINTENANCE"
-                            th:selected="${status != null && status.name() == 'MAINTENANCE'}">
-                        Bảo trì
-                    </option>
-
-                </select>
+                <div class="w-full sm:w-52">
+                    <select name="status"
+                            class="w-full px-4 py-2 text-sm rounded-xl border border-slate-200 bg-slate-50 text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:bg-white transition duration-150 cursor-pointer">
+                        <option value="">Tất cả trạng thái</option>
+                        <option value="AVAILABLE" th:selected="${status != null && status.name() == 'AVAILABLE'}">Còn
+                            trống (AVAILABLE)
+                        </option>
+                        <option value="RENTED" th:selected="${status != null && status.name() == 'RENTED'}">Đã thuê
+                            (RENTED)
+                        </option>
+                        <option value="MAINTENANCE" th:selected="${status != null && status.name() == 'MAINTENANCE'}">
+                            Bảo trì (MAINTENANCE)
+                        </option>
+                    </select>
+                </div>
 
                 <button type="submit"
-                        class="btn btn-edit">
+                        class="w-full sm:w-auto px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl text-sm transition duration-150 cursor-pointer shadow-sm shadow-blue-500/10">
                     Tìm kiếm
                 </button>
-
             </form>
-            <h2>Danh sách phòng</h2>
-
-            <a th:href="@{/rooms/create}" class="btn btn-create">
-                + Thêm phòng
-            </a>
         </div>
 
-        <table>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                    <tr class="bg-slate-50 border-b border-slate-100 text-slate-600 text-xs uppercase tracking-wider font-semibold">
+                        <th class="p-4 text-center">ID</th>
+                        <th class="p-4">Mã phòng</th>
+                        <th class="p-4">Tên phòng</th>
+                        <th class="p-4 text-right">Giá thuê (VND)</th>
+                        <th class="p-4 text-center">Diện tích</th>
+                        <th class="p-4 text-center">Số người tối đa</th>
+                        <th class="p-4 text-center">Trạng thái</th>
+                        <th class="p-4 text-center">Thao tác</th>
+                    </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 text-sm text-slate-700">
+                    <tr th:if="${#lists.isEmpty(rooms)}">
+                        <td colspan="8" class="p-8 text-center text-slate-400 italic bg-slate-50/50">
+                            Không tìm thấy phòng nào phù hợp.
+                        </td>
+                    </tr>
 
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Mã phòng</th>
-                <th>Tên phòng</th>
-                <th>Giá thuê</th>
-                <th>Diện tích</th>
-                <th>Số người</th>
-                <th>Trạng thái</th>
-                <th>Thao tác</th>
-            </tr>
-            </thead>
+                    <tr th:each="room : ${rooms}" class="hover:bg-slate-50/70 transition-colors duration-150">
+                        <td class="p-4 text-center font-medium text-slate-500" th:text="${room.id}"></td>
+                        <td class="p-4 font-semibold text-slate-900" th:text="${room.roomCode}"></td>
+                        <td class="p-4" th:text="${room.roomName}"></td>
+                        <td class="p-4 text-right font-medium text-blue-600"
+                            th:text="${#numbers.formatDecimal(room.price,0,'COMMA',0,'POINT')} + ' đ'"></td>
+                        <td class="p-4 text-center" th:text="${room.area} + ' m²'"></td>
+                        <td class="p-4 text-center" th:text="${room.maxPeople}"></td>
+                        <td class="p-4 text-center">
+                            <span th:if="${room.status.name() == 'AVAILABLE'}"
+                                  class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">Còn trống</span>
+                            <span th:if="${room.status.name() == 'RENTED'}"
+                                  class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">Đã thuê</span>
+                            <span th:if="${room.status.name() == 'MAINTENANCE'}"
+                                  class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200">Bảo trì</span>
+                        </td>
+                        <td class="p-4">
+                            <div class="flex items-center justify-center gap-2">
+                                <a th:href="@{/rooms/edit/{id}(id=${room.id})}"
+                                   class="inline-flex items-center px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 font-medium rounded-lg text-xs transition duration-150">
+                                    Sửa
+                                </a>
+                                <form th:action="@{/rooms/{id}(id=${room.id})}" method="post" class="inline">
+                                    <input type="hidden" name="_method" value="delete">
+                                    <button type="submit"
+                                            class="inline-flex items-center px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 font-medium rounded-lg text-xs transition duration-150 cursor-pointer"
+                                            onclick="return confirm('Bạn có chắc muốn xóa phòng này?')">
+                                        Xóa
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-            <tbody>
+        <div class="flex justify-center mt-6" th:if="${roomPage.totalPages > 1}">
+            <nav class="inline-flex -space-x-px rounded-xl shadow-xs bg-white border border-slate-200 p-1 gap-1"
+                 aria-label="Pagination">
 
-            <tr th:each="room : ${rooms}">
-
-                <td th:text="${room.id}"></td>
-
-                <td th:text="${room.roomCode}"></td>
-
-                <td th:text="${room.roomName}"></td>
-
-                <td th:text="${#numbers.formatDecimal(room.price,0,'COMMA',0,'POINT')}"></td>
-
-                <td th:text="${room.area}"></td>
-
-                <td th:text="${room.maxPeople}"></td>
-
-                <td th:text="${room.status}"></td>
-
-                <td>
-                    <div class="action-group">
-
-                        <a th:href="@{/rooms/edit/{id}(id=${room.id})}"
-                           class="btn btn-edit">
-                            Sửa
-                        </a>
-
-                        <form th:action="@{/rooms/{id}(id=${room.id})}"
-                              method="post">
-
-                            <input type="hidden"
-                                   name="_method"
-                                   value="delete">
-
-                            <button type="submit"
-                                    class="btn btn-delete"
-                                    onclick="return confirm('Bạn có chắc muốn xóa phòng này?')">
-                                Xóa
-                            </button>
-
-                        </form>
-
-                    </div>
-                </td>
-
-            </tr>
-
-            </tbody>
-
-        </table>
-
-        <br>
-
-        <div class="pagination" th:if="${roomPage.totalPages > 1}">
-
-            <a th:if="${roomPage.hasPrevious()}"
-               th:href="@{/rooms(page=${roomPage.number - 1}, roomCode=${roomCode}, status=${status})}">
-                &laquo;
-            </a>
-
-            <th:block th:each="i : ${#numbers.sequence(1, roomPage.totalPages)}">
-                <a th:href="@{/rooms(page=${i - 1}, roomCode=${roomCode}, status=${status})}"
-                   th:text="${i}"
-                   th:classappend="${i - 1 == roomPage.number} ? 'active' : ''">
+                <a th:if="${roomPage.hasPrevious()}"
+                   th:href="@{/rooms(page=${roomPage.number - 1}, roomCode=${roomCode}, status=${status})}"
+                   class="inline-flex items-center justify-center w-9 h-9 text-sm font-medium text-slate-500 hover:bg-slate-50 rounded-lg transition duration-150">
+                    &laquo;
                 </a>
-            </th:block>
 
-            <a th:if="${roomPage.hasNext()}"
-               th:href="@{/rooms(page=${roomPage.number + 1}, roomCode=${roomCode}, status=${status})}">
-                &raquo;
-            </a>
+                <th:block th:each="i : ${#numbers.sequence(1, roomPage.totalPages)}">
+                    <a th:href="@{/rooms(page=${i - 1}, roomCode=${roomCode}, status=${status})}"
+                       th:text="${i}"
+                       th:classappend="${i - 1 == roomPage.number}
+                                      ? 'bg-blue-600 text-white font-semibold shadow-xs hover:bg-blue-700'
+                                      : 'text-slate-600 hover:bg-slate-50'"
+                       class="inline-flex items-center justify-center w-9 h-9 text-sm font-medium rounded-lg transition duration-150">
+                    </a>
+                </th:block>
+
+                <a th:if="${roomPage.hasNext()}"
+                   th:href="@{/rooms(page=${roomPage.number + 1}, roomCode=${roomCode}, status=${status})}"
+                   class="inline-flex items-center justify-center w-9 h-9 text-sm font-medium text-slate-500 hover:bg-slate-50 rounded-lg transition duration-150">
+                    &raquo;
+                </a>
+            </nav>
         </div>
 
-    </div>
+    </main>
 </div>
 
 </body>
