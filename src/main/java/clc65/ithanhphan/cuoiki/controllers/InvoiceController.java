@@ -32,15 +32,19 @@ public class InvoiceController {
             @RequestParam(value = "page", defaultValue = "0") int page,
             Model model) {
 
+        String cleanKeyword = (keyword != null && !keyword.trim().isEmpty()) ? keyword.trim() : null;
+        String cleanStatus = (status != null && !status.trim().isEmpty()) ? status.trim() : null;
+
         int pageSize = 3;
-        Page<Invoice> invoicePage = invoiceService.getAllInvoices(keyword, month, status, page, pageSize);
+        Page<Invoice> invoicePage = invoiceService.getAllInvoices(cleanKeyword, month, cleanStatus, page, pageSize);
 
         model.addAttribute("invoices", invoicePage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", invoicePage.getTotalPages());
-        model.addAttribute("keyword", keyword);
+
+        model.addAttribute("keyword", cleanKeyword);
         model.addAttribute("month", month);
-        model.addAttribute("status", status);
+        model.addAttribute("status", cleanStatus);
 
         return "invoices/list";
     }

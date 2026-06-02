@@ -23,8 +23,12 @@ public class InvoiceService {
 
     public Page<Invoice> getAllInvoices(String keyword, Integer month, String statusStr, int page, int size) {
         Invoice.InvoiceStatus status = null;
-        if (statusStr != null && !statusStr.isEmpty()) {
-            status = Invoice.InvoiceStatus.valueOf(statusStr);
+        if (statusStr != null && !statusStr.trim().isEmpty()) {
+            try {
+                status = Invoice.InvoiceStatus.valueOf(statusStr.trim());
+            } catch (IllegalArgumentException e) {
+                status = null;
+            }
         }
 
         String cleanKeyword = (keyword != null && !keyword.trim().isEmpty()) ? keyword.trim() : null;

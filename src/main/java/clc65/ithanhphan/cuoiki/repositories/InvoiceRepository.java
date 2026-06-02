@@ -13,10 +13,14 @@ import java.math.BigDecimal;
 @Repository
 public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
 
-    @Query("SELECT i FROM Invoice i JOIN i.contract c JOIN c.tenant t JOIN c.room r " +
+    @Query(value = "SELECT i FROM Invoice i JOIN i.contract c JOIN c.tenant t JOIN c.room r " +
             "WHERE (:keyword IS NULL OR i.invoiceCode LIKE %:keyword% OR c.contractCode LIKE %:keyword% OR t.fullName LIKE %:keyword% OR r.roomName LIKE %:keyword%) " +
             "AND (:month IS NULL OR i.billingMonth = :month) " +
-            "AND (:status IS NULL OR i.status = :status)")
+            "AND (:status IS NULL OR i.status = :status)",
+            countQuery = "SELECT COUNT(i) FROM Invoice i JOIN i.contract c JOIN c.tenant t JOIN c.room r " +
+                    "WHERE (:keyword IS NULL OR i.invoiceCode LIKE %:keyword% OR c.contractCode LIKE %:keyword% OR t.fullName LIKE %:keyword% OR r.roomName LIKE %:keyword%) " +
+                    "AND (:month IS NULL OR i.billingMonth = :month) " +
+                    "AND (:status IS NULL OR i.status = :status)")
     Page<Invoice> searchInvoices(@Param("keyword") String keyword,
                                  @Param("month") Integer month,
                                  @Param("status") Invoice.InvoiceStatus status,
