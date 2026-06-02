@@ -32,7 +32,7 @@ public class InvoiceController {
             @RequestParam(value = "page", defaultValue = "0") int page,
             Model model) {
 
-        int pageSize = 5;
+        int pageSize = 3;
         Page<Invoice> invoicePage = invoiceService.getAllInvoices(keyword, month, status, page, pageSize);
 
         model.addAttribute("invoices", invoicePage.getContent());
