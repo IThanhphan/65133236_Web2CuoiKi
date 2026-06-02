@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/rooms")
@@ -17,27 +18,22 @@ public class RoomController {
     private final RoomService roomService;
 
     @GetMapping
-    public String roomList(
-            @RequestParam(required = false) String roomCode,
-            @RequestParam(required = false) RoomStatus status,
-            @RequestParam(defaultValue = "0") int page,
-            Model model
-    ) {
-        Page<Room> roomPage =
-                roomService.getRooms(
-                        roomCode,
-                        status,
-                        page,
-                        5
-                );
+    public String listRooms(@RequestParam(value = "roomCode", required = false) String roomCode,
+                            @RequestParam(value = "status", required = false) RoomStatus status,
+                            @RequestParam(value = "page", defaultValue = "0") int page,
+                            @RequestParam(value = "size", defaultValue = "5") int size,
+                            Model model) {
 
-        model.addAttribute("roomPage", roomPage);
-        model.addAttribute("rooms", roomPage.getContent());
+        Page<Room> pageResult = roomService.getRooms(roomCode, status, page, size);
+
+        model.addAttribute("rooms", pageResult.getContent());
+
+        model.addAttribute("roomPage", pageResult);
 
         model.addAttribute("roomCode", roomCode);
         model.addAttribute("status", status);
 
-        return "room/list";
+        return "rooms/list";
     }
 
     @GetMapping("/create")
@@ -48,7 +44,7 @@ public class RoomController {
                 new Room()
         );
 
-        return "room/create";
+        return "rooms/create";
     }
 
     @PostMapping("/create")
@@ -74,7 +70,7 @@ public class RoomController {
                 room
         );
 
-        return "room/edit";
+        return "rooms/edit";
     }
 
     @PostMapping("/edit/{id}")
@@ -90,14 +86,14 @@ public class RoomController {
         return "redirect:/rooms";
     }
 
-    @DeleteMapping("/{id}")
-    @ResponseBody
-    public String deleteRoom(
-            @PathVariable Long id
-    ) {
-
-        roomService.delete(id);
-
-        return "Deleted";
+    @PostMapping("/delete/{id}")
+    public String deleteRoom(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
+        try {
+            roomService.delete(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Xóa căn phòng thành công thành công!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Không thể xóa phòng: " + e.getMessage());
+        }
+        return "redirect:/rooms";
     }
 }

@@ -34,7 +34,21 @@ public class RoomService {
     }
 
     public void delete(Long id) {
-        roomRepository.deleteById(id);
+        Room room = roomRepository.findById(id).orElse(null);
+
+        if (room == null) {
+            throw new IllegalArgumentException("Không tìm thấy phòng có ID: " + id);
+        }
+
+        if (room.getStatus() != null && "RENTED".equals(room.getStatus().name())) {
+            throw new IllegalStateException("Không thể xóa phòng đang trong trạng thái CÓ KHÁCH THUÊ!");
+        }
+
+        try {
+            roomRepository.delete(room);
+        } catch (Exception e) {
+            throw new IllegalStateException("Phòng này đã từng phát sinh hợp đồng/hóa đơn trong quá khứ, không thể xóa để đảm bảo dữ liệu lịch sử kế toán!");
+        }
     }
 
     public Page<Room> getRooms(

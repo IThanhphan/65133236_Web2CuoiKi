@@ -19,21 +19,28 @@ public class Room {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "room_code", nullable = false, unique = true, length = 20)
     private String roomCode;
 
+    @Column(name = "room_name", nullable = false, length = 100)
     private String roomName;
 
+    @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal price;
 
     @Column(precision = 6, scale = 2)
     private BigDecimal area;
 
+    @Column(name = "max_people")
     private Integer maxPeople;
 
     @Enumerated(EnumType.STRING)
-    private RoomStatus status;
+    @Column(columnDefinition = "ENUM('AVAILABLE', 'RENTED', 'MAINTENANCE') DEFAULT 'AVAILABLE'")
+    private RoomStatus status = RoomStatus.AVAILABLE;
 
+    @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Column(name = "created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;
 }
